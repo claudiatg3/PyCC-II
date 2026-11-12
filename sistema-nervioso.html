@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧠 Sistema Nervioso y Sustancias Psicoactivas</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  body {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #6a11cb 100%);
+    min-height: 100vh;
+    color: #fff;
+    padding: 20px;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+  }
+  header h1 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+  header p { font-size: 1.1rem; opacity: 0.9; }
+
+  /* Navegación */
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 25px;
+  }
+  .tab-btn {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 2px solid transparent;
+    padding: 10px 18px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+  .tab-btn:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+  .tab-btn.active {
+    background: #ff6b6b;
+    border-color: #ffd93d;
+    box-shadow: 0 4px 15px rgba(255,107,107,0.4);
+  }
+
+  .tab-content { display: none; animation: fadeIn 0.5s; }
+  .tab-content.active { display: block; }
+  @keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
+
+  h2 {
+    color: #ffd93d;
+    margin-bottom: 15px;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+  }
+  h3 { color: #ffd93d; margin: 15px 0 10px; }
+  p, li { line-height: 1.7; margin-bottom: 10px; }
+  ul { padding-left: 20px; }
+
+  /* Objetivo */
+  .objetivo-box {
+    background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+    color: #1e3c72;
+    padding: 25px;
+    border-radius: 15px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  }
+
+  /* Desarrollo - pasos */
+  .pasos { display: grid; gap: 15px; }
+  .paso {
+    background: rgba(255,255,255,0.1);
+    padding: 18px;
+    border-radius: 12px;
+    border-left: 5px solid #ffd93d;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.3s;
+  }
+  .paso:hover { transform: translateX(8px); background: rgba(255,255,255,0.15); }
+  .paso-num {
+    background: #ff6b6b;
+    color: #fff;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  /* Cerebro interactivo */
+  .cerebro-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+  }
+  @media (max-width: 768px) { .cerebro-container { grid-template-columns: 1fr; } }
+
+  .cerebro-svg {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: block;
+  }
+  .area-cerebro {
+    cursor: pointer;
+    transition: all 0.3s;
+    stroke: #fff;
+    stroke-width: 2;
+  }
+  .area-cerebro:hover { opacity: 0.7; transform-origin: center; }
+  .area-cerebro.active { stroke: #ffd93d; stroke-width: 4; filter: drop-shadow(0 0 10px #ffd93d); }
+
+  .info-cerebro {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 15px;
+    min-height: 200px;
+    border: 2px solid #ffd93d;
+  }
+  .info-cerebro h3 { color: #ffd93d; margin-bottom: 10px; }
+
+  /* Sustancias */
+  .sustancias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  .sustancia-card {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-top: 4px solid;
+  }
+  .sustancia-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+  .sustancia-card h4 { font-size: 1.2rem; margin-bottom: 10px; }
+  .sustancia-card .efectos { display: none; margin-top: 10px; font-size: 0.95rem; }
+  .sustancia-card.expandida .efectos { display: block; }
+  .sustancia-card .toggle { color: #ffd93d; font-size: 0.9rem; margin-top: 8px; }
+
+  .alerta {
+    background: rgba(255,107,107,0.2);
+    border: 2px solid #ff6b6b;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+    font-style: italic;
+  }
+
+  /* Producto */
+  .producto-opciones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  .producto-card {
+    background: linear-gradient(135deg, rgba(255,217,61,0.2), rgba(255,107,107,0.2));
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    transition: transform 0.3s;
+    border: 2px solid transparent;
+  }
+  .producto-card:hover { transform: scale(1.05); border-color: #ffd93d; }
+  .producto-card .icono { font-size: 3rem; margin-bottom: 10px; }
+
+  /* Quiz */
+  .quiz-pregunta {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+  }
+  .quiz-opciones { display: grid; gap: 8px; margin-top: 12px; }
+  .quiz-opcion {
+    background: rgba(255,255,255,0.15);
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+  }
+  .quiz-opcion:hover { background: rgba(255,255,255,0.25); }
+  .quiz-opcion.correcta { background: #4ade80; color: #000; border-color: #fff; }
+  .quiz-opcion.incorrecta { background: #ff6b6b; border-color: #fff; }
+  .quiz-feedback { margin-top: 10px; font-weight: bold; min-height: 25px; }
+  #quiz-resultado {
+    text-align: center;
+    font-size: 1.3rem;
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255,217,61,0.2);
+    border-radius: 10px;
+    display: none;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    opacity: 0.8;
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🧠 Sistema Nervioso y Sustancias Psicoactivas</h1>
+    <p>Actividad interactiva para secundaria y bachillerato</p>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="objetivo">🎯 Objetivo</button>
+    <button class="tab-btn" data-tab="desarrollo">📋 Desarrollo</button>
+    <button class="tab-btn" data-tab="cerebro">🧩 Cerebro</button>
+    <button class="tab-btn" data-tab="sustancias">⚗️ Sustancias</button>
+    <button class="tab-btn" data-tab="producto">🎨 Producto</button>
+    <button class="tab-btn" data-tab="quiz">✅ Quiz</button>
+  </nav>
+
+  <!-- OBJETIVO -->
+  <section id="objetivo" class="tab-content active">
+    <h2>🎯 Objetivo de aprendizaje</h2>
+    <div class="objetivo-box">
+      Comprender de manera general cómo las sustancias psicoactivas pueden modificar el funcionamiento del sistema nervioso.
+    </div>
+    <p style="margin-top:20px; text-align:center;">
+      Explora cada pestaña para descubrir cómo funciona tu cerebro y cómo diferentes sustancias pueden alterarlo. ¡Al final podrás poner a prueba tus conocimientos!
+    </p>
+  </section>
+
+  <!-- DESARROLLO -->
+  <section id="desarrollo" class="tab-content">
+    <h2>📋 Desarrollo de la actividad</h2>
+    <p>Trabaja en equipo y completa los siguientes pasos:</p>
+    <div class="pasos">
+      <div class="paso"><div class="paso-num">1</div><div>Investiga sobre el <strong>sistema nervioso central</strong>: sus partes, funciones y cómo se comunica con el resto del cuerpo.</div></div>
+      <div class="paso"><div class="paso-num">2</div><div>Identifica las funciones del cerebro relacionadas con: <strong>memoria, atención, emociones, sueño y toma de decisiones</strong>.</div></div>
+      <div class="paso"><div class="paso-num">3</div><div>Elabora un <strong>esquema del cerebro</strong> señalando cada área y su función.</div></div>
+      <div class="paso"><div class="paso-num">4</div><div>Explica cómo <strong>distintas sustancias</strong> pueden afectar estas funciones.</div></div>
+      <div class="paso"><div class="paso-num">5</div><div>Compara los efectos, <strong>sin afirmar que todas actúan de la misma manera</strong>.</div></div>
+    </div>
+  </section>
+
+  <!-- CEREBRO INTERACTIVO -->
+  <section id="cerebro" class="tab-content">
+    <h2>🧩 Cerebro interactivo</h2>
+    <p>Haz clic en cada área del cerebro para conocer su función:</p>
+    <div class="cerebro-container">
+      <svg class="cerebro-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- Lóbulo frontal -->
+        <path class="area-cerebro" data-area="frontal" fill="#ff6b6b"
+          d="M 80 180 Q 60 120 100 80 Q 150 60 200 80 L 200 200 Q 150 220 80 180 Z"/>
+        <!-- Lóbulo parietal -->
+        <path class="area-cerebro" data-area="parietal" fill="#ffd93d"
+          d="M 200 80 Q 260 70 300 110 Q 320 150 300 200 L 200 200 Z"/>
+        <!-- Lóbulo temporal -->
+        <path class="area-cerebro" data-area="temporal" fill="#4ade80"
+          d="M 80 180 Q 100 240 150 260 Q 200 270 220 240 L 200 200 Q 150 220 80 180 Z"/>
+        <!-- Lóbulo occipital -->
+        <path class="area-cerebro" data-area="occipital" fill="#60a5fa"
+          d="M 300 200 Q 330 240 310 290 Q 270 310 230 290 Q 220 260 220 240 L 300 200 Z"/>
+        <!-- Cerebelo -->
+        <ellipse class="area-cerebro" data-area="cerebelo" fill="#c084fc" cx="260" cy="330" rx="50" ry="35"/>
+        <!-- Tronco encefálico -->
+        <path class="area-cerebro" data-area="tronco" fill="#fb923c"
+          d="M 200 280 Q 190 320 195 370 L 215 370 Q 220 320 210 280 Z"/>
+      </svg>
+      <div class="info-cerebro" id="info-cerebro">
+        <h3>👆 Selecciona un área</h3>
+        <p>Haz clic en cualquier zona del cerebro para conocer su función y cómo puede ser afectada por sustancias psicoactivas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUSTANCIAS -->
+  <section id="sustancias" class="tab-content">
+    <h2>⚗️ Sustancias psicoactivas</h2>
+    <p>Haz clic en cada tarjeta para ver cómo afecta al sistema nervioso:</p>
+    <div class="sustancias-grid">
+      <div class="sustancia-card" style="border-color:#ff6b6b" onclick="this.classList.toggle('expandida')">
+        <h4>🍺 Alcohol</h4>
+        <p><em>Depresor del sistema nervioso</em></p>
+        <div class="efectos">
+          <strong>Efectos:</strong>
+          <ul>
+            <li>Disminuye la atención y los reflejos</li>
+            <li>Altera la toma de decisiones</li>
+            <li>Afecta la memoria a corto plazo</li>
+            <li>Interrumpe las fases del sueño</li>
+          </ul>
+        </div>
+        <div class="toggle">▼ Ver más</div>
+      </div>
+
+      <div class="sustancia-card" style="border-color:#ffd93d" onclick="this.classList.toggle('expandida')">
+        <h4>🚬 Nicotina</h4>
+        <p><em>Estimulante</em></p>
+        <div class="efectos">
+          <strong>Efectos:</strong>
+          <ul>
+            <li>Aumenta temporalmente la atención</li>
+            <li>Genera dependencia rápida</li>
+            <li>Altera el estado de ánimo</li>
+            <li>Afecta el desarrollo cerebral en adolescentes</li>
+          </ul>
+        </div>
+        <div class="toggle">▼ Ver más</div>
+      </div>
+
+      <div class="sustancia-card" style="border-color:#4ade80" onclick="this.classList.toggle('expandida')">
+        <h4>☕ Cafeína</h4>
+        <p><em>Estimulante leve</em></p>
+        <div class="efectos">
+          <strong>Efectos:</strong>
+          <ul>
+            <li>Aumenta el estado de alerta</li>
+            <li>Puede provocar insomnio</li>
+            <li>En exceso causa ansiedad</li>
+            <li>Genera tolerancia con el uso frecuente</li>
+          </ul>
+        </div>
+        <div class="toggle">▼ Ver más</div>
+      </div>
+
+      <div class="sustancia-card" style="border-color:#60a5fa" onclick="this.classList.toggle('expandida')">
+        <h4>🌿 Cannabis</h4>
+        <p><em>Alucinógeno / Depresor</em></p>
+        <div class="efectos">
+          <strong>Efectos:</strong>
+          <ul>
+            <li>Altera la percepción del tiempo</li>
+            <li>Afecta la memoria a corto plazo</li>
+            <li>Modifica las emociones</li>
+            <li>Puede disminuir la motivación</li>
+          </ul>
+        </div>
+        <div class="toggle">▼ Ver más</div>
+      </div>
+
+      <div class="sustancia-card" style="border-color:#c084fc" onclick="this.classList.toggle('expandida')">
+        <h4>💊 Medicamentos</h4>
+        <p><em>Variables (según tipo)</em></p>
+        <div class="efectos">
+          <strong>Efectos:</strong>
+          <ul>
+            <li>Pueden calmar o estimular según el tipo</li>
+            <li>Solo deben usarse bajo supervisión médica</li>
+            <li>El uso incorrecto altera funciones cerebrales</li>
+            <li>Pueden generar dependencia</li>
+          </ul>
+        </div>
+        <div class="toggle">▼ Ver más</div>
+      </div>
+
+      <div class="sustancia-card" style="border-color:#fb923c" onclick="this.classList.toggle('expandida')">
+        <h4>🧪 Otras sustancias</h4>
+        <p><em>Efectos muy variables</em></p>
+        <div class="efectos">
+          <strong>Efectos generales:</strong>
+          <ul>
+            <li>Alteran la comunicación entre neuronas</li>
+            <li>Modifican la percepción, ánimo o conciencia</li>
+            <li>Cada sustancia actúa de forma distinta</li>
+            <li>Los efectos dependen de dosis, persona y contexto</li>
+          </ul>
+        </div>
+        <div class="toggle">▼ Ver más</div>
+      </div>
+    </div>
+    <div class="alerta">
+      ⚠️ <strong>Importante:</strong> Cada sustancia actúa de manera diferente sobre el sistema nervioso. No todas producen los mismos efectos, ni afectan las mismas áreas del cerebro. El impacto depende del tipo de sustancia, la dosis, la frecuencia de uso y las características de cada persona.
+    </div>
+  </section>
+
+  <!-- PRODUCTO -->
+  <section id="producto" class="tab-content">
+    <h2>🎨 Producto final</h2>
+    <p>Al terminar la investigación, tu equipo deberá presentar uno de los siguientes productos:</p>
+    <div class="producto-opciones">
+      <div class="producto-card">
+        <div class="icono">🏗️</div>
+        <h3>Maqueta</h3>
+        <p>Representación física del cerebro con sus áreas y funciones.</p>
+      </div>
+      <div class="producto-card">
+        <div class="icono">📊</div>
+        <h3>Infografía</h3>
+        <p>Imagen visual con datos, funciones y efectos de las sustancias.</p>
+      </div>
+      <div class="producto-card">
+        <div class="icono">🎤</div>
+        <h3>Exposición ilustrada</h3>
+        <p>Presentación oral apoyada con imágenes, dibujos o diapositivas.</p>
+      </div>
+    </div>
+    <h3 style="margin-top:25px;">💡 Criterios de evaluación:</h3>
+    <ul>
+      <li>Claridad en la explicación de las funciones cerebrales.</li>
+      <li>Comparación correcta de los efectos de distintas sustancias.</li>
+      <li>Evitar generalizaciones: reconocer que cada sustancia actúa diferente.</li>
+      <li>Creatividad y calidad del producto presentado.</li>
+      <li>Trabajo en equipo y participación de todos los integrantes.</li>
+    </ul>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="tab-content">
+    <h2>✅ Pon a prueba tus conocimientos</h2>
+    <div id="quiz-container"></div>
+    <div id="quiz-resultado"></div>
+  </section>
+
+  <footer>
+    <p>📚 Actividad educativa · Práctica y Colaboración Ciudadana II · Ciencias Naturales / Biología · Bachillerato</p>
+  </footer>
+</div>
+
+<script>
+  // Navegación por pestañas
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Cerebro interactivo
+  const infoCerebro = {
+    frontal: {
+      titulo: "🧠 Lóbulo Frontal",
+      texto: "Es la parte más grande del cerebro. Se encarga de la <strong>toma de decisiones</strong>, la planificación, el control de impulsos y la personalidad.<br><br><strong>Efecto de sustancias:</strong> El alcohol y el cannabis pueden alterar la capacidad de decidir y controlar impulsos."
+    },
+    parietal: {
+      titulo: "🧩 Lóbulo Parietal",
+      texto: "Procesa la información sensorial como el <strong>tacto, la temperatura y el dolor</strong>. También ayuda a ubicarnos en el espacio.<br><br><strong>Efecto de sustancias:</strong> Algunas sustancias pueden alterar la percepción del cuerpo y del espacio."
+    },
+    temporal: {
+      titulo: "🎵 Lóbulo Temporal",
+      texto: "Responsable de la <strong>memoria</strong>, el lenguaje y la audición. Aquí se guardan muchos recuerdos.<br><br><strong>Efecto de sustancias:</strong> El alcohol y el cannabis afectan la memoria a corto plazo y dificultan aprender cosas nuevas."
+    },
+    occipital: {
+      titulo: "👁️ Lóbulo Occipital",
+      texto: "Se encarga de procesar la <strong>información visual</strong>: todo lo que vemos pasa por aquí.<br><br><strong>Efecto de sustancias:</strong> Los alucinógenos pueden distorsionar lo que vemos."
+    },
+    cerebelo: {
+      titulo: "🤸 Cerebelo",
+      texto: "Coordina el <strong>equilibrio</strong> y los movimientos precisos. Nos permite caminar, correr o escribir sin caernos.<br><br><strong>Efecto de sustancias:</strong> El alcohol afecta mucho al cerebelo, por eso quien bebe pierde el equilibrio."
+    },
+    tronco: {
+      titulo: "🫁 Tronco Encefálico",
+      texto: "Controla funciones vitales como <strong>respirar, el latido del corazón y el sueño</strong>. Es la parte más antigua del cerebro.<br><br><strong>Efecto de sustancias:</strong> Algunas sustancias pueden alterar el sueño o, en dosis muy altas, afectar funciones vitales."
+    }
+  };
+
+  document.querySelectorAll('.area-cerebro').forEach(area => {
+    area.addEventListener('click', () => {
+      document.querySelectorAll('.area-cerebro').forEach(a => a.classList.remove('active'));
+      area.classList.add('active');
+      const info = infoCerebro[area.dataset.area];
+      document.getElementById('info-cerebro').innerHTML = `<h3>${info.titulo}</h3><p>${info.texto}</p>`;
+    });
+  });
+
+  // Quiz
+  const preguntas = [
+    {
+      q: "¿Qué lóbulo del cerebro se encarga principalmente de la toma de decisiones?",
+      opciones: ["Occipital", "Frontal", "Temporal", "Cerebelo"],
+      correcta: 1
+    },
+    {
+      q: "¿Cuál de las siguientes sustancias es un depresor del sistema nervioso?",
+      opciones: ["Cafeína", "Nicotina", "Alcohol", "Ninguna"],
+      correcta: 2
+    },
+    {
+      q: "¿Qué área del cerebro controla el equilibrio?",
+      opciones: ["Lóbulo frontal", "Cerebelo", "Tronco encefálico", "Lóbulo occipital"],
+      correcta: 1
+    },
+    {
+      q: "¿Es correcto afirmar que todas las sustancias psicoactivas actúan igual en el cerebro?",
+      opciones: ["Sí, todas actúan igual", "No, cada una actúa de manera diferente", "Solo las legales actúan igual", "Depende del color"],
+      correcta: 1
+    },
+    {
+      q: "¿Qué lóbulo está más relacionado con la memoria?",
+      opciones: ["Parietal", "Occipital", "Temporal", "Cerebelo"],
+      correcta: 2
+    }
+  ];
+
+  const quizContainer = document.getElementById('quiz-container');
+  let respondidas = 0, correctas = 0;
+
+  preguntas.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-pregunta';
+    div.innerHTML = `<strong>${i+1}. ${p.q}</strong><div class="quiz-opciones"></div><div class="quiz-feedback" id="fb-${i}"></div>`;
+    const opcionesDiv = div.querySelector('.quiz-opciones');
+    p.opciones.forEach((op, j) => {
+      const btn = document.createElement('div');
+      btn.className = 'quiz-opcion';
+      btn.textContent = op;
+      btn.addEventListener('click', () => {
+        if (btn.classList.contains('correcta') || btn.classList.contains('incorrecta')) return;
+        if (j === p.correcta) {
+          btn.classList.add('correcta');
+          document.getElementById(`fb-${i}`).textContent = "✅ ¡Correcto!";
+          document.getElementById(`fb-${i}`).style.color = "#4ade80";
+          correctas++;
+        } else {
+          btn.classList.add('incorrecta');
+          document.getElementById(`fb-${i}`).textContent = `❌ Incorrecto. La respuesta era: ${p.opciones[p.correcta]}`;
+          document.getElementById(`fb-${i}`).style.color = "#ff6b6b";
+        }
+        respondidas++;
+        if (respondidas === preguntas.length) {
+          const res = document.getElementById('quiz-resultado');
+          res.style.display = 'block';
+          let msg = `Obtuviste ${correctas} de ${preguntas.length} correctas. `;
+          if (correctas === preguntas.length) msg += "🏆 ¡Excelente! Dominas el tema.";
+          else if (correctas >= 3) msg += "👍 ¡Muy bien! Sigue repasando.";
+          else msg += "📚 Te recomendamos revisar nuevamente las pestañas.";
+          res.textContent = msg;
+        }
+      });
+      opcionesDiv.appendChild(btn);
+    });
+    quizContainer.appendChild(div);
+  });
+</script>
+</body>
+</html>
